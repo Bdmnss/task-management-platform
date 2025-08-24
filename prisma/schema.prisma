@@ -8,11 +8,53 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   name       String
-  email      String   @unique
+  email      String  @unique
   password   String
-  role       String 
+  role       String
   department String
-  avatar     String? 
+  avatar     String?
+
+  tasksAssigned Task[]    @relation("AssignedTasks")
+  tasksCreated  Task[]    @relation("CreatedTasks")
+  comments      Comment[]
+  files         File[]    @relation("UploadedFiles")
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  status      String
+  dueDate     DateTime
+  assigneeId  Int
+  createdById Int
+
+  assignee  User      @relation("AssignedTasks", fields: [assigneeId], references: [id])
+  createdBy User      @relation("CreatedTasks", fields: [createdById], references: [id])
+  comments  Comment[]
+  files     File[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  taskId    Int
+  userId    Int
+  content   String
+  createdAt DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model File {
+  id         Int    @id @default(autoincrement())
+  taskId     Int
+  filename   String
+  url        String
+  uploadedBy Int
+
+  task Task @relation(fields: [taskId], references: [id])
+  user User @relation("UploadedFiles", fields: [uploadedBy], references: [id])
 }
