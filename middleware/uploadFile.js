@@ -31,3 +31,28 @@ export const uploadProfileImage = multer({
     fileSize: 1024 * 1024 * 5, // 5 MB
   },
 }).single("avatar");
+
+////
+
+const filterTaskFile = (req, file, cb) => {
+  const allowedTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type"), false);
+  }
+};
+
+export const uploadTaskFile = multer({
+  storage,
+  fileFilter: filterTaskFile,
+  limits: {
+    fileSize: 1024 * 1024 * 5, // 5 MB
+  },
+}).single("file");
