@@ -37,10 +37,13 @@ export const getAllTasks = async (req, res) => {
   try {
     let tasks;
     if (req.user.role === "admin") {
-      tasks = await prisma.task.findMany();
+      tasks = await prisma.task.findMany({
+        include: { comments: { include: { user: true } } },
+      });
     } else {
       tasks = await prisma.task.findMany({
         where: { assigneeId: req.user.id },
+        include: { comments: { include: { user: true } } },
       });
     }
     res.status(200).json(tasks);
