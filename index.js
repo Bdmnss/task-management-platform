@@ -1,4 +1,5 @@
 import express from "express";
+import setupSwagger from "./swagger/swagger.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
@@ -9,6 +10,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+setupSwagger(app);
 
 app.use("/uploads", express.static("uploads"));
 
